@@ -1,8 +1,9 @@
 import logging
 import threading
+import time
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.concurrency import run_in_threadpool
 
@@ -18,11 +19,17 @@ state = {"recognizer": None, "error": None}
 def _load():
     try:
         from .pipeline import Recognizer
+        from PIL import Image
+        from .images import to_rgb
         r = Recognizer(settings)
-        state["recognizer"] = r
         log.info("models and reference bundle %s loaded (%d wines)", r.bundle.version, len(r.bundle.slugs))
         if settings.warm_refs:
             r.warm_refs()
+        # throwaway recognitions so the first real request does not pay for CUDA/vLLM warm-up
+        for _ in range(2):
+            r.recognize(to_rgb(Image.open(r.bundle.photo[r.bundle.slugs[0]])))
+        log.info("warm-up done")
+        state["recognizer"] = r  # only now the service reports itself as ready
     except Exception as e:
         state["error"] = f"{type(e).__name__}: {e}"
         log.exception("startup failed")
@@ -36,7 +43,21 @@ async def lifespan(app):
 
 app = FastAPI(title="Wine label scanner", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=[o.strip() for o in settings.cors_origins.split(",")],
-                   allow_methods=["GET", "POST", "OPTIONS"], allow_headers=["*"])
+                   allow_methods=["GET", "POST", "OPTIONS"], allow_headers=["*"],
+                   expose_headers=["X-Process-Time-Ms", "X-Request-Time-Ms"])
+
+
+@app.middleware("http")
+async def request_time(request, call_next):
+    """X-Request-Time-Ms: whole request incl. receiving the upload (depends on the client's network)."""
+    t0 = time.perf_counter()
+    response = await call_next(request)
+    ms = round((time.perf_counter() - t0) * 1000)
+    response.headers["X-Request-Time-Ms"] = str(ms)
+    if request.url.path.startswith("/v1/"):
+        log.info("%s %s -> %d | request %d ms, processing %s ms", request.method, request.url.path,
+                 response.status_code, ms, response.headers.get("X-Process-Time-Ms", "-"))
+    return response
 
 
 def _recognizer():
@@ -64,28 +85,32 @@ def ready():
     return {"status": "ready", "reference_bundle": r.bundle.version, "wines": len(r.bundle.slugs)}
 
 
-async def _run(image: UploadFile):
+async def _run(image: UploadFile, response: Response):
+    """X-Process-Time-Ms: server-side processing after the upload is received (decode + pipeline)."""
     r = _recognizer()
     data = await image.read(settings.max_bytes + 1)
+    t0 = time.perf_counter()
     try:
         im = await run_in_threadpool(decode, data, settings.max_bytes, settings.max_pixels)
     except ImageError as e:
         raise HTTPException(e.status, str(e))
-    return r, await run_in_threadpool(r.recognize, im)
+    res = await run_in_threadpool(r.recognize, im)
+    response.headers["X-Process-Time-Ms"] = str(round((time.perf_counter() - t0) * 1000))
+    return r, res
 
 
 @app.post("/v1/eval/predict")
-async def eval_predict(image: UploadFile = File(...)):
+async def eval_predict(response: Response, image: UploadFile = File(...)):
     """Organizers' format: ranked list, element [0] is the answer."""
-    _, res = await _run(image)
+    _, res = await _run(image, response)
     return [{"slug": c["slug"], "score": c["score"], "p_yes": c["p_yes"], "cosine": c["cosine"]} for c in res["candidates"]]
 
 
 @app.post("/v1/recognize")
-async def recognize(image: UploadFile = File(...)):
+async def recognize(response: Response, image: UploadFile = File(...)):
     """Frontend contract (frontend/API_CONTRACT.md). Every photo is a catalog wine by the case rules,
     so the status is always `matched`; uncertainty is reported via `confidence` / `low_confidence`."""
-    r, res = await _run(image)
+    r, res = await _run(image, response)
     return {
         "status": "matched",
         "slug": res["slug"],

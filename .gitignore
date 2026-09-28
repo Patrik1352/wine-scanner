@@ -6,3 +6,5 @@ __pycache__/
 .env
 predictions.jsonl
 .DS_Store
+eval/case/queries/
+eval/results/
