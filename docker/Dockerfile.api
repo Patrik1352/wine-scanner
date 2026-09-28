@@ -1,0 +1,11 @@
+# Optional; NOT tested (no Docker on the dev server). The primary way to run is scripts/run_*.sh.
+FROM pytorch/pytorch:2.5.1-cuda12.1-cudnn9-runtime
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY wine_scanner/ wine_scanner/
+COPY adapters/ adapters/
+COPY models.lock.json .
+ENV WS_BUNDLE_DIR=/data/reference_bundle HF_HOME=/hf WS_VLLM_URL=http://vllm:8000
+EXPOSE 8080
+CMD ["uvicorn", "wine_scanner.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1"]

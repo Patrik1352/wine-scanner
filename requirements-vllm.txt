@@ -1,0 +1,2 @@
+# Verifier server, install into a SEPARATE environment (vLLM pins its own torch/CUDA).
+vllm==0.19.1

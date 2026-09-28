@@ -1,0 +1,14 @@
+# API process (image encoders + HTTP). Tested: Python 3.10, CUDA 12.1.
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.5.1
+torchvision==0.20.1
+transformers==4.53.3
+peft==0.21.0
+huggingface_hub>=0.34,<1.0
+numpy>=1.26
+pillow>=10.4
+pillow-heif>=0.18
+requests>=2.31
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9

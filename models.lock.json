@@ -1,0 +1,12 @@
+{
+  "embedders": [
+    {"tag": "v1", "repo_id": "google/siglip-so400m-patch14-384", "revision": "9fdffc58afc957d1a03a25b10dba0329ab15c2a3", "image_size": 384, "adapter": "adapters/embed_v1"},
+    {"tag": "v2", "repo_id": "google/siglip2-so400m-patch16-384", "revision": "dd658faac399427308559e2c3ac1e99cbe43845d", "image_size": 384, "adapter": "adapters/embed_v2"},
+    {"tag": "v3", "repo_id": "google/siglip2-so400m-patch16-512", "revision": "ceea1cba8130d8271436da4828633198c176a775", "image_size": 512, "adapter": "adapters/embed_v3"}
+  ],
+  "verifier": {
+    "repo_id": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "adapter": "artifacts/verifier_lora"
+  }
+}

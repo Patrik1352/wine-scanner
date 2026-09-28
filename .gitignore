@@ -1,0 +1,8 @@
+artifacts/
+logs/
+__pycache__/
+*.pyc
+.venv*/
+.env
+predictions.jsonl
+.DS_Store
