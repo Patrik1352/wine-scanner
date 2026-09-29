@@ -100,6 +100,13 @@ export function useScanner(initialMode: Mode, apiBase: string) {
         result = await service.recognize(converted, active.signal)
       }
       if (id !== generation) return
+      // The API always proposes a slug, even when its verifier cannot confirm it.
+      // Treat that proposal as unconfirmed before fetching or showing a wine card.
+      if (result.status === 'matched' && result.low_confidence) {
+        outcome.value = { status: 'no_confident_match', slug: null, reason_code: 'low_match_score' }
+        phase.value = 'negative'
+        return
+      }
       outcome.value = result
       if (result.status === 'matched') {
         const card = await service.wine(result.slug, active.signal)
