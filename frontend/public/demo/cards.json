@@ -1,0 +1,151 @@
+[
+  {
+    "slug": "fanagoriya-cru-lermont-chardonnay-shardone-beloe-suhoe-14",
+    "name": "Cru Lermont Chardonnay",
+    "winery_name": "Фанагория",
+    "region": "Кубань",
+    "category": "Белое сухое",
+    "color_category": "Белое",
+    "sweetness_from_category": "сухое",
+    "grapes": [
+      "Шардоне"
+    ],
+    "description": "В аромате спелые фрукты, ваниль. Вкус полный, мягкий, длительное послевкусие.",
+    "alcohol_percent": 14,
+    "alcohol_max_percent": null,
+    "serving_temperature_c": "12–13",
+    "food_pairings": [
+      "Легкие закуски",
+      "Морепродукты",
+      "Паста",
+      "Сыры"
+    ],
+    "public_rating": 5,
+    "guide_rating": null,
+    "similar_wine_slugs": [
+      "znoj-denisov-vajneri",
+      "cantiani-riesling-rkatsiteli"
+    ],
+    "source_url": "https://vino-svoe.ru/wines/fanagoriya-cru-lermont-chardonnay-shardone-beloe-suhoe-14",
+    "fetched_at": "2026-09-15T09:07:20.940229+00:00",
+    "image_url": "/demo/fanagoriya-cru-lermont-chardonnay-shardone-beloe-suhoe-14.webp"
+  },
+  {
+    "slug": "usadba-markoth-shardone-beloe-suhoe-12",
+    "name": "Шардоне",
+    "winery_name": "Усадьба Маркотх",
+    "region": "Кубань",
+    "category": "Белое сухое",
+    "color_category": "Белое",
+    "sweetness_from_category": "сухое",
+    "grapes": [
+      "Шардоне"
+    ],
+    "description": "Свежий весенний аромат с нотами лемонграсса, ароматных трав, зеленого миндаля, цитрусовых и косточковых фруктов. Вкус сбалансированный, с приятной полнотой и маслянистостью. На финише сочные цитрусовые брызги. Красивое прочтение сорта.",
+    "alcohol_percent": 12,
+    "alcohol_max_percent": null,
+    "serving_temperature_c": "8–12",
+    "food_pairings": [
+      "Блюда из птицы",
+      "Рыба и морепродукты",
+      "Салаты",
+      "Средиземноморская кухня"
+    ],
+    "public_rating": 5,
+    "guide_rating": 4.33,
+    "similar_wine_slugs": [
+      "znoj-denisov-vajneri",
+      "cantiani-riesling-rkatsiteli"
+    ],
+    "source_url": "https://vino-svoe.ru/wines/usadba-markoth-shardone-beloe-suhoe-12",
+    "fetched_at": "2026-09-15T09:11:45.851127+00:00",
+    "image_url": "/demo/usadba-markoth-shardone-beloe-suhoe-12.webp"
+  },
+  {
+    "slug": "znoj-denisov-vajneri",
+    "name": "Зной. Денисов Вайнери",
+    "winery_name": "Denisov Winery",
+    "region": "Самара",
+    "category": "Белое сухое",
+    "color_category": "Белое",
+    "sweetness_from_category": "сухое",
+    "grapes": [
+      "Ркацители",
+      "Цитронный Магарача"
+    ],
+    "description": "Аромат: засахаренные дольки и цедра лимона, жёлтая, леденцовая груша с медовыми тонами липового цвета. \n\nВкус: сбалансированный, освежающий вкус, с хорошей кислотностью. Фруктовая палитра, повторяя аромат, раскрывается спелой грушей, сочным персиком и зрелой айвой в послевкусии.\n\nТехнология: машинный сбор, ферментация при t +14 +17, выдержка в стали 6 месяцев.\n",
+    "alcohol_percent": 12,
+    "alcohol_max_percent": 13.5,
+    "serving_temperature_c": "8-12",
+    "food_pairings": [
+      "Блюда из птицы",
+      "Легкие закуски",
+      "Салаты"
+    ],
+    "public_rating": 4,
+    "guide_rating": null,
+    "similar_wine_slugs": [
+      "cantiani-riesling-rkatsiteli"
+    ],
+    "source_url": "https://vino-svoe.ru/wines/znoj-denisov-vajneri",
+    "fetched_at": "2026-09-15T09:14:28.952556+00:00",
+    "image_url": "/demo/znoj-denisov-vajneri.webp"
+  },
+  {
+    "slug": "cantiani-riesling-rkatsiteli",
+    "name": "Cantiani Riesling Rkatsiteli",
+    "winery_name": "Шато АЛВИСА",
+    "region": "Дагестан",
+    "category": "Белое сухое",
+    "color_category": "Белое",
+    "sweetness_from_category": "сухое",
+    "grapes": [
+      "Рислинг Рейнский",
+      "Ркацители"
+    ],
+    "description": "​Вкус раскрывается фруктово-леденцовыми нотками, оттенками грейпфрута, груши и освежающим минеральным послевкусием средней длины. Аромат с нотками цветочного меда, белых полевых цветов, зеленого яблока и цитрусовых ",
+    "alcohol_percent": 10,
+    "alcohol_max_percent": 12,
+    "serving_temperature_c": "8-10",
+    "food_pairings": [
+      "Блюда из птицы",
+      "Блюда из рыбы",
+      "Легкие закуски",
+      "Салаты"
+    ],
+    "public_rating": 5,
+    "guide_rating": null,
+    "similar_wine_slugs": [
+      "znoj-denisov-vajneri"
+    ],
+    "source_url": "https://vino-svoe.ru/wines/cantiani-riesling-rkatsiteli",
+    "fetched_at": "2026-09-15T09:05:38.658006+00:00",
+    "image_url": "/demo/cantiani-riesling-rkatsiteli.webp"
+  },
+  {
+    "slug": "abrau-dyurso-abrau-kupazh-svetlyy-suhoe-shardone-beloe-125",
+    "name": "Абрау Купаж светлый сухое",
+    "winery_name": "Абрау-Дюрсо",
+    "region": "Кубань",
+    "category": null,
+    "color_category": "Белое",
+    "sweetness_from_category": null,
+    "grapes": [
+      "Августин",
+      "Рислинг",
+      "Уньи блан",
+      "Шардоне"
+    ],
+    "description": "В аромате ноты крыжовника в сочетании с белыми цветами. Во вкусе ноты алычи и тропические фрукты.",
+    "alcohol_percent": null,
+    "alcohol_max_percent": null,
+    "serving_temperature_c": null,
+    "food_pairings": null,
+    "public_rating": null,
+    "guide_rating": null,
+    "similar_wine_slugs": [],
+    "source_url": null,
+    "fetched_at": null,
+    "image_url": "/demo/abrau-dyurso-abrau-kupazh-svetlyy-suhoe-shardone-beloe-125.webp"
+  }
+]

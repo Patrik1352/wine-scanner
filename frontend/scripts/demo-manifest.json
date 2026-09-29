@@ -1,0 +1,36 @@
+{
+  "source": "data/catalog_v1/catalog.jsonl",
+  "catalog_sha256": "6133ba0eb10cf261267fc2f084dd8d92292c8c797e8b10d1aea3710fb7f21d03",
+  "images": [
+    {
+      "slug": "fanagoriya-cru-lermont-chardonnay-shardone-beloe-suhoe-14",
+      "source_image": "data/Датасет/prod-svoe-vino-strapi/prod-svoe-vino/strapi/uploads/fanagoriya_cru_lermont_chardonnay_shardone_beloe_suhoe_14_435c653682.webp",
+      "sha256": "d2a824bfdda160d09bc85b9b2517c6ee534c07361cb6d7e5c2db88866c5a1b18",
+      "bytes": 60816
+    },
+    {
+      "slug": "usadba-markoth-shardone-beloe-suhoe-12",
+      "source_image": "data/Датасет/prod-svoe-vino-strapi/prod-svoe-vino/strapi/uploads/usadba_markoth_shardone_beloe_suhoe_12_d3c526d065.webp",
+      "sha256": "d7264870fd8e068c5e13b9f82889cead2459255762e9f523a0f49e697d554558",
+      "bytes": 73172
+    },
+    {
+      "slug": "znoj-denisov-vajneri",
+      "source_image": "data/Датасет/prod-svoe-vino-strapi/prod-svoe-vino/strapi/uploads/Znoj_denisov_vajneri_no_bg_preview_carve_photos_0452c989d8.webp",
+      "sha256": "d3d63e51316f69d53934a42c704c14d02ca1cdaa35d7efd3f9d2f7b58af1d508",
+      "bytes": 23102
+    },
+    {
+      "slug": "cantiani-riesling-rkatsiteli",
+      "source_image": "data/Датасет/prod-svoe-vino-strapi/prod-svoe-vino/strapi/uploads/Cantiani_Riesl_Rkats_New_vid_042025_kopiya_9745bc157c.webp",
+      "sha256": "87094b06d601d364d8263c06bb1ef5d804f2b86d9fc8277cd7676295e95f4b4b",
+      "bytes": 134442
+    },
+    {
+      "slug": "abrau-dyurso-abrau-kupazh-svetlyy-suhoe-shardone-beloe-125",
+      "source_image": "data/Датасет/prod-svoe-vino-strapi/prod-svoe-vino/strapi/uploads/abrau_dyurso_abrau_kupazh_svetlyy_suhoe_shardone_beloe_125_b60d4bb639.webp",
+      "sha256": "1da65da387479645a1c4360bb92dffb4f31d8be823104454ba4ad8f9f8cfd1fa",
+      "bytes": 54206
+    }
+  ]
+}
