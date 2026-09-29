@@ -25,6 +25,8 @@ class Settings:
     # images sent to the verifier are downscaled to this longest side (the LoRA was trained at ~1M px)
     image_side: int = field(default_factory=lambda: int(_env("WS_IMAGE_SIDE", "1600")))
     tiebreak: bool = field(default_factory=lambda: _env("WS_TIEBREAK", "1") == "1")
+    # kosher card -> its regular counterpart (see wine_scanner/redirects.py)
+    redirects: bool = field(default_factory=lambda: _env("WS_REDIRECTS", "1") == "1")
     warm_refs: bool = field(default_factory=lambda: _env("WS_WARM_REFS", "1") == "1")
     verify_bundle: bool = field(default_factory=lambda: _env("WS_VERIFY_BUNDLE", "1") == "1")
     max_bytes: int = field(default_factory=lambda: int(_env("WS_MAX_BYTES", str(25 * 1024 * 1024))))

@@ -120,6 +120,7 @@ async def recognize(response: Response, image: UploadFile = File(...)):
         "alternatives": r.bundle.equivalents(res["slug"]),
         "top_k": res["candidates"],
         "tiebreak": res["tiebreak"],
+        "redirected_from": res["redirected_from"],
         "degraded": res["degraded"],
         "timings_ms": res["timings_ms"],
         "reference_bundle": r.bundle.version,

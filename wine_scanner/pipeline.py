@@ -19,6 +19,7 @@ from PIL import Image
 from .bundle import Bundle
 from .embedder import Embedder, top_k
 from .images import jpeg_data_uri, to_rgb
+from .redirects import apply_redirects
 from .verifier import Verifier
 
 log = logging.getLogger("wine_scanner")
@@ -87,6 +88,10 @@ class Recognizer:
                 ranked = [item] + ranked
                 ranked = ranked[: self.s.top_k]
 
+        redirected_from = None
+        if self.s.redirects:
+            ranked, redirected_from = apply_redirects(ranked, self.bundle.name, self.s.top_k, known=self.bundle.catalog)
+
         confidence = ranked[0]["p_yes"]
         return {
             "slug": ranked[0]["slug"],
@@ -95,6 +100,7 @@ class Recognizer:
             "margin": round(ranked[0]["score"] - ranked[1]["score"], 4) if len(ranked) > 1 else None,
             "candidates": ranked,
             "tiebreak": tiebreak,
+            "redirected_from": redirected_from,
             "degraded": degraded,
             "timings_ms": {"embed": round((t_emb - t0) * 1000), "verify": round((t_ver - t_emb) * 1000),
                            "total": round((time.time() - t0) * 1000)},

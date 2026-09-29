@@ -179,6 +179,7 @@ eval/run_check.sh --images-dir eval/case/queries --manifest eval/case/queries.ts
 | `WS_LOW_CONFIDENCE` | `0.3` | порог флага `low_confidence` |
 | `WS_IMAGE_SIDE` | `1600` | длинная сторона фото для верификатора, px |
 | `WS_TIEBREAK` | `1` | тай-брейк двойников по тексту этикетки |
+| `WS_REDIRECTS` | `1` | кошерная карточка → обычная версия того же вина (`wine_scanner/redirects.py`; организаторы не считают это ошибкой) |
 | `WS_WARM_REFS` | `1` | прогреть кэш эталонов при старте (~35 с) |
 | `WS_VERIFY_BUNDLE` | `1` | проверять sha256 набора при старте |
 | `WS_MAX_BYTES`, `WS_MAX_PIXELS` | 25 МБ, 64 Мп | лимиты фото |
