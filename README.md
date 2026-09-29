@@ -37,11 +37,12 @@
 |---|---|---|
 | код (`wine_scanner/`, `scripts/`) | да | — |
 | LoRA энкодеров (`adapters/embed_v{1,2,3}`, по 4 МБ) | да | — |
-| версии базовых моделей (`models.lock.json`) | да | модели качаются с HF по закреплённой ревизии |
-| LoRA верификатора (`artifacts/verifier_lora`, 117 МБ) | **нет** | приватный HF-репозиторий (см. ниже) |
+| LoRA верификатора (`adapters/verifier`, 117 МБ, fp32 — как обучена) | да, **Git LFS** | `git lfs pull` |
+| версии базовых моделей (`models.lock.json`) | да | публичные модели HF, качаются сами по закреплённой ревизии, **без токена** |
 | набор эталонов (`artifacts/reference_bundle`, 200 МБ) | **нет** | приватный HF dataset-репозиторий |
 
 Эталонные фото — данные организаторов (+12 фото бутылок с сайта vino-svoe.ru) — **не публиковать**.
+LoRA верификатора хранится в исходном fp32 без изменений (GitHub не принимает файлы > 100 МБ без LFS).
 
 ### Набор эталонов (`artifacts/reference_bundle`)
 ```
@@ -62,19 +63,20 @@ card_info.json     короткие описания карточек для т�
 vLLM ставится в **отдельное** окружение — у него свои версии torch/CUDA.
 
 ```bash
+git lfs install && git clone <repo> && cd wine-scanner && git lfs pull   # LoRA верификатора — через Git LFS
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt           # API
 python3 -m venv .venv-vllm && .venv-vllm/bin/pip install -r requirements-vllm.txt  # верификатор
 
-# артефакты (после того как они выложены на HF; <org> — ваша организация/аккаунт)
-huggingface-cli download <org>/wine-scanner-verifier-lora --local-dir artifacts/verifier_lora
+# набор эталонов (после того как он выложен на HF; <org> — ваша организация/аккаунт)
 huggingface-cli download <org>/wine-scanner-references --repo-type dataset --local-dir artifacts/reference_bundle
 
-.venv/bin/python scripts/download_models.py   # базовые модели в HF-кэш; дальше можно HF_HUB_OFFLINE=1
+.venv/bin/python scripts/download_models.py   # необязательно: заранее скачать базовые модели (~22 ГБ)
 ```
+Базовые модели (3 SigLIP/SigLIP2 и Qwen3.5-4B) — публичные, токен Hugging Face не нужен. Если их не скачать
+заранее, они скачаются при первом запуске (`run_vllm.sh` / `run_api.sh`); после этого можно `HF_HUB_OFFLINE=1`.
 
-Выложить артефакты (один раз, из этого сервера):
+Выложить набор эталонов (один раз, из этого сервера):
 ```bash
-huggingface-cli upload <org>/wine-scanner-verifier-lora artifacts/verifier_lora . --private
 huggingface-cli upload <org>/wine-scanner-references artifacts/reference_bundle . --repo-type dataset --private
 ```
 
@@ -88,7 +90,8 @@ PYTHON=.venv/bin/python bash scripts/run_api.sh            # ждёт готов
 curl -s localhost:8080/health/ready
 bash scripts/stop.sh                                      # остановить оба (по PID-файлам в logs/)
 ```
-Если базовая модель верификатора лежит не в HF-кэше, а в папке: `VERIFIER_BASE=/path/to/Qwen3.5-4B`.
+Пути к моделям прописывать не нужно. Только если Qwen3.5-4B уже лежит в отдельной папке (не в HF-кэше) —
+можно указать её: `VERIFIER_BASE=/path/to/Qwen3.5-4B`.
 Если порт 8000 занят: `VLLM_PORT=8010` и `WS_VLLM_URL=http://127.0.0.1:8010`.
 По умолчанию оба сервиса слушают только `127.0.0.1`; наружу — `WS_HOST=0.0.0.0` или reverse proxy.
 

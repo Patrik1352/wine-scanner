@@ -1,4 +1,4 @@
-# Optional; NOT tested. Needs NVIDIA Container Toolkit. Mount: artifacts/ (bundle + verifier LoRA), HF cache.
+# Optional; NOT tested. Needs NVIDIA Container Toolkit. Mounts: adapters/ (LoRA), artifacts/reference_bundle, HF cache.
 services:
   vllm:
     image: vllm/vllm-openai:v0.19.1
@@ -7,8 +7,8 @@ services:
       --dtype bfloat16 --gpu-memory-utilization 0.3 --max-model-len 16384 --max-num-seqs 32
       --max-num-batched-tokens 16384 --enable-prefix-caching
       --limit-mm-per-prompt '{"image": 2, "video": 0}' --mm-processor-kwargs '{"max_pixels": 1003520}'
-      --enable-lora --lora-modules sft=/artifacts/verifier_lora --max-lora-rank 16
-    volumes: ["../artifacts:/artifacts:ro", "${HF_CACHE:-~/.cache/huggingface}:/root/.cache/huggingface"]
+      --enable-lora --lora-modules sft=/adapters/verifier --max-lora-rank 16
+    volumes: ["../adapters:/adapters:ro", "${HF_CACHE:-~/.cache/huggingface}:/root/.cache/huggingface"]
     deploy: {resources: {reservations: {devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]}}}
   api:
     build: {context: .., dockerfile: docker/Dockerfile.api}

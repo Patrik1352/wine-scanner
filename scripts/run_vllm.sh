@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Start the verifier: vLLM with Qwen3.5-4B (served as `base`) + LoRA (served as `sft`), in the background.
 # Env: GPU (default 0), VLLM_PORT (8000), VLLM_BIN (vllm), VLLM_GPU_UTIL (0.3 ~= 25 GB on A100-80),
-#      VERIFIER_BASE (default: repo id from models.lock.json; may be a local directory).
+#      VERIFIER_BASE (optional: local directory with Qwen3.5-4B; by default the pinned revision from
+#      models.lock.json is downloaded from Hugging Face, no token needed).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p logs
@@ -10,14 +11,16 @@ PY=${PYTHON:-python3}
 read -r LOCK_REPO LOCK_REV < <($PY -c 'import json;v=json.load(open("models.lock.json"))["verifier"];print(v["repo_id"],v["revision"])')
 BASE=${VERIFIER_BASE:-$LOCK_REPO}
 REV_ARGS=(); [ "$BASE" = "$LOCK_REPO" ] && REV_ARGS=(--revision "$LOCK_REV")
-[ -f artifacts/verifier_lora/adapter_model.safetensors ] || { echo "missing artifacts/verifier_lora (see README)"; exit 1; }
+LORA=adapters/verifier/adapter_model.safetensors
+[ -f "$LORA" ] || { echo "missing $LORA"; exit 1; }
+[ "$(stat -c %s "$LORA")" -gt 1000000 ] || { echo "$LORA is a Git LFS pointer: run 'git lfs install && git lfs pull'"; exit 1; }
 if [ -f logs/vllm.pid ] && kill -0 "$(cat logs/vllm.pid)" 2>/dev/null; then echo "vLLM already running (pid $(cat logs/vllm.pid))"; exit 0; fi
 
 CUDA_VISIBLE_DEVICES=$GPU setsid "$VLLM_BIN" serve "$BASE" "${REV_ARGS[@]}" --served-model-name base --dtype bfloat16 \
   --host 127.0.0.1 --port "$VLLM_PORT" --gpu-memory-utilization "$VLLM_GPU_UTIL" \
   --max-model-len 16384 --max-num-seqs 32 --max-num-batched-tokens 16384 --enable-prefix-caching \
   --limit-mm-per-prompt '{"image": 2, "video": 0}' --mm-processor-kwargs '{"max_pixels": 1003520}' \
-  --enable-lora --lora-modules sft=artifacts/verifier_lora --max-lora-rank 16 \
+  --enable-lora --lora-modules sft=adapters/verifier --max-lora-rank 16 \
   > logs/vllm.log 2>&1 < /dev/null &
 echo $! > logs/vllm.pid
 echo "vLLM starting (pid $!, port $VLLM_PORT, GPU $GPU); log: logs/vllm.log"

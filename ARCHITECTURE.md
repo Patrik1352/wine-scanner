@@ -47,7 +47,7 @@ flowchart LR
 ### 2. Извлечение признаков — `wine_scanner/embedder.py`
 - Три энкодера (ансамбль даёт +2–3 п.п. к одиночному):
   `siglip-so400m-patch14-384` (v1), `siglip2-so400m-patch16-384` (v2), `siglip2-so400m-patch16-512` (v3).
-- К каждому применён LoRA-адаптер (`adapters/embed_v*`, по 4 МБ), при загрузке вливается в веса
+- К каждому применён LoRA-адаптер (`adapters/embed_v*`, по 4 МБ, в git), при загрузке вливается в веса
   (`merge_and_unload`), bf16. Выход — вектор 1152, L2-нормированный.
 - Версии базовых моделей закреплены по commit hash в `models.lock.json`.
 - ~0.2 с на фото на A100 (три прохода). Энкодеры защищены одним lock — запросы к GPU последовательны.
@@ -97,9 +97,9 @@ P(YES) = P(yes)/(P(yes)+P(no)). 5 запросов параллельно, ~0.45
 
 | артефакт | версия | хранение |
 |---|---|---|
-| базовые модели | commit hash в `models.lock.json` | Hugging Face, скачиваются `scripts/download_models.py` |
+| базовые модели | commit hash в `models.lock.json` | публичные на Hugging Face, скачиваются без токена |
 | LoRA энкодеров | в git | `adapters/` |
-| LoRA верификатора | `q35_4b_hr_v2_sft_lora_s500` | вне git, `artifacts/verifier_lora` (приватный HF) |
+| LoRA верификатора | `q35_4b_hr_v2_sft_lora_s500`, fp32 | в git через Git LFS, `adapters/verifier` |
 | набор эталонов | `manifest.json → version` (сейчас v4) | вне git, `artifacts/reference_bundle` (приватный HF) |
 
 Индекс неотделим от эталонов (векторы посчитаны по этим фото, верификатору нужны сами фото) — поэтому они
