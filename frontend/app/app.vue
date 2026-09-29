@@ -11,6 +11,7 @@ const { mode, scenario, phase, file, photo, checking, wine, outcome, error, alte
 const upload = ref<HTMLInputElement | null>(null)
 const video = ref<HTMLVideoElement | null>(null)
 const cameraDialog = ref<HTMLDialogElement | null>(null)
+const photoDialog = ref<HTMLDialogElement | null>(null)
 const heading = ref<HTMLElement | null>(null)
 const cameraOpen = ref(false)
 const cameraReady = ref(false)
@@ -34,6 +35,9 @@ function closeCamera() {
   cameraReady.value = false; cameraOpen.value = false
   cameraDialog.value?.close()
 }
+function openPhotoView() { if (photo.value) photoDialog.value?.showModal() }
+function closePhotoView() { photoDialog.value?.close() }
+watch(photo, closePhotoView)
 async function openCamera() {
   scanner.stopRequest()
   if (!navigator.mediaDevices?.getUserMedia) { scanner.reportError('Камера доступна по HTTPS или на localhost. Выберите готовое фото.'); return }
@@ -61,7 +65,7 @@ async function sample() { await scanner.loadSample(heroBottle) }
 
 function setMode(event: Event) { closeCamera(); scanner.changeMode((event.target as HTMLSelectElement).value as Mode) }
 function setScenario(event: Event) { scanner.changeScenario((event.target as HTMLSelectElement).value as DemoScenario) }
-onBeforeUnmount(() => { closeCamera(); scanner.reset() })
+onBeforeUnmount(() => { closeCamera(); closePhotoView(); scanner.reset() })
 </script>
 
 <template>
@@ -111,7 +115,7 @@ onBeforeUnmount(() => { closeCamera(); scanner.reset() })
         <div class="result-bottom"><button class="button primary" @click="scanner.reset"><AppIcon name="scan" />Сканировать другое вино</button><small>{{ mode === 'demo' ? 'Сведения из конкурсного каталога · сентябрь 2026' : 'Сведения из подключённого каталога' }}</small></div>
       </template>
       <div v-else class="scan-workspace">
-        <div class="photo-panel"><img v-if="photo" :src="photo" alt="Выбранная фотография для распознавания" /><div v-else class="photo-empty"><AppIcon name="image" /><span>Выберите фотографию</span></div><span v-if="photo" class="photo-label">Ваша фотография</span><div v-if="phase === 'processing'" class="processing-sweep" /></div>
+        <div class="photo-panel"><img v-if="photo" :src="photo" alt="Выбранная фотография для распознавания" /><div v-else class="photo-empty"><AppIcon name="image" /><span>Выберите фотографию</span></div><span v-if="photo" class="photo-label">Ваша фотография</span><button v-if="photo" class="photo-expand" type="button" @click="openPhotoView"><AppIcon name="image" />Показать целиком</button><div v-if="phase === 'processing'" class="processing-sweep" /></div>
         <div class="scan-instructions">
           <template v-if="phase === 'preview'"><span class="step-number">01 / ФОТОГРАФИЯ</span><h2>Этикетка хорошо видна?</h2><p>В кадре должна быть одна бутылка. Название, винодельня и мелкий текст помогут найти точную карточку.</p><p v-if="mode === 'demo'" class="inline-note">Демо: {{ scenarios.find(s => s[0] === scenario)?.[1] }}. Ответ не зависит от фото.</p><button class="button primary" :disabled="checking" @click="scanner.recognize"><AppIcon name="scan" />{{ mode === 'demo' ? 'Показать демо-результат' : 'Распознать вино' }}<AppIcon name="arrow" /></button></template>
           <template v-else-if="phase === 'processing'"><span class="loader" /><h2>{{ mode === 'demo' ? 'Показываем, как это работает' : 'Ищем вино в каталоге' }}</h2><p role="status">{{ mode === 'demo' ? 'Сейчас откроется результат выбранного демо-сценария.' : 'Изучаем этикетку на вашей фотографии. Это займёт немного времени.' }}</p><button class="button secondary" @click="scanner.stopRequest">Отменить обработку</button></template>
@@ -127,6 +131,10 @@ onBeforeUnmount(() => { closeCamera(); scanner.reset() })
     <input ref="upload" class="sr-only" tabindex="-1" type="file" :accept="ACCEPT" aria-label="Выбрать фотографию вина" @change="selected">
     <dialog ref="cameraDialog" class="camera-dialog" aria-labelledby="camera-title" @cancel.prevent="closeCamera">
       <div v-if="cameraOpen" class="camera-content"><div class="camera-top"><h2 id="camera-title">Поместите этикетку в кадр</h2><button class="icon-button" aria-label="Закрыть камеру" @click="closeCamera"><AppIcon name="close" /></button></div><video ref="video" autoplay muted playsinline aria-label="Изображение с камеры" /><p role="status">{{ cameraReady ? 'Одна бутылка, без бликов. Коснитесь кнопки, чтобы сделать снимок.' : 'Ожидаем доступ к камере…' }}</p><button class="button primary" :disabled="!cameraReady" @click="capture"><AppIcon name="camera" />Сделать снимок</button></div>
+    </dialog>
+    <dialog ref="photoDialog" class="photo-dialog" aria-labelledby="photo-view-title" @cancel.prevent="closePhotoView">
+      <div class="photo-dialog-top"><h2 id="photo-view-title">Ваша фотография целиком</h2><button class="icon-button" type="button" aria-label="Закрыть просмотр фотографии" @click="closePhotoView"><AppIcon name="close" /></button></div>
+      <img v-if="photo" :src="photo" alt="Загруженная фотография полностью" />
     </dialog>
   </main>
   <footer><span class="footer-brand">своё вино <span>/ сканер</span></span><p>Чрезмерное употребление алкоголя вредит вашему здоровью</p><span class="age">18+</span></footer>
