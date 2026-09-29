@@ -10,7 +10,7 @@ flowchart LR
     N -->|RGB 384/512 px| F[2. Признаки<br/>embedder.py<br/>3 энкодера SigLIP + LoRA]
     F -->|3 вектора| S[3a. Поиск<br/>косинус к 2102 эталонам<br/>top-5]
     N -->|JPEG ≤1600 px| V
-    S --> V[3b. Проверка<br/>verifier.py → vLLM<br/>Qwen3.5-4B + LoRA: P(YES)]
+    S --> V["3b. Проверка<br/>verifier.py → vLLM<br/>Qwen3.5-4B + LoRA: P(YES)"]
     V --> R[3c. Ранжирование<br/>pipeline.py<br/>фьюжн + тай-брейк двойников]
     R --> O[4. Выдача<br/>main.py]
     O -->|/v1/eval/predict| E["top-5, элемент 0 = ответ"]
