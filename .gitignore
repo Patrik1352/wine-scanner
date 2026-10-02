@@ -4,7 +4,7 @@ __pycache__/
 *.pyc
 .venv*/
 .env
-predictions.jsonl
+# predictions.jsonl
 .DS_Store
 eval/case/queries/
 eval/results/

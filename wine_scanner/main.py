@@ -103,6 +103,8 @@ async def _run(image: UploadFile, response: Response):
 async def eval_predict(response: Response, image: UploadFile = File(...)):
     """Organizers' format: ranked list, element [0] is the answer."""
     _, res = await _run(image, response)
+    if res["low_confidence"]:
+        return []
     return [{"slug": c["slug"], "score": c["score"], "p_yes": c["p_yes"], "cosine": c["cosine"]} for c in res["candidates"]]
 
 
