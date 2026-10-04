@@ -13,7 +13,7 @@ services:
     volumes: ["../adapters:/adapters:ro", "${HF_CACHE:-~/.cache/huggingface}:/root/.cache/huggingface"]
     deploy: {resources: {reservations: {devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]}}}
   api:
-    image: wine-scanner-api:latest
+    image: sv200466/wine-scanner-api:latest
     platform: linux/amd64
     build:
       context: ..
@@ -25,7 +25,7 @@ services:
     deploy: {resources: {reservations: {devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]}}}
     restart: unless-stopped
   frontend:
-    image: wine-scanner-frontend:latest
+    image: sv200466/wine-scanner-frontend:latest
     platform: linux/amd64
     build:
       context: ..
