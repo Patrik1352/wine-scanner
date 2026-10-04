@@ -1,0 +1,16 @@
+.git/
+.venv*/
+frontend/node_modules/
+artifacts/
+logs/
+.env
+Eval/
+Eval.zip
+eval/case/queries/
+eval/results/
+hf-cache/
+**/__pycache__/
+*.py[cod]
+frontend/.nuxt/
+frontend/.output/
+frontend/.env*

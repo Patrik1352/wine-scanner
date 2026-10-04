@@ -2,6 +2,8 @@
 services:
   vllm:
     image: vllm/vllm-openai:v0.19.1
+    platform: linux/amd64
+    restart: unless-stopped
     command: >
       Qwen/Qwen3.5-4B --revision 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a --served-model-name base
       --dtype bfloat16 --gpu-memory-utilization 0.3 --max-model-len 16384 --max-num-seqs 32
@@ -11,9 +13,29 @@ services:
     volumes: ["../adapters:/adapters:ro", "${HF_CACHE:-~/.cache/huggingface}:/root/.cache/huggingface"]
     deploy: {resources: {reservations: {devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]}}}
   api:
-    build: {context: .., dockerfile: docker/Dockerfile.api}
-    ports: ["8080:8080"]
+    image: wine-scanner-api:latest
+    platform: linux/amd64
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    ports: ["127.0.0.1:8080:8080"]
     environment: {WS_VLLM_URL: "http://vllm:8000"}
     volumes: ["../artifacts/reference_bundle:/data/reference_bundle:ro", "${HF_CACHE:-~/.cache/huggingface}:/hf"]
     depends_on: [vllm]
     deploy: {resources: {reservations: {devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]}}}
+    restart: unless-stopped
+  frontend:
+    image: wine-scanner-frontend:latest
+    platform: linux/amd64
+    build:
+      context: ..
+      dockerfile: frontend/Dockerfile
+      args:
+        NUXT_API_INTERNAL_URL: http://api:8080
+    ports: ["3000:3000"]
+    environment:
+      NUXT_PUBLIC_RECOGNITION_MODE: api
+      NUXT_PUBLIC_API_BASE: ""
+      NUXT_API_INTERNAL_URL: http://api:8080
+    depends_on: [api]
+    restart: unless-stopped
